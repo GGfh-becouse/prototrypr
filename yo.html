@@ -447,7 +447,7 @@
         .match-row label {
             font-size: 12px;
             font-weight: 600;
-            min-width: 30px;
+            min-width: 60px;
         }
 
         .match-row input[type="number"] {
@@ -536,43 +536,43 @@
                             <div class="form-group">
                                 <label>Последние 5 матчей (888 = нет данных)</label>
                                 <div id="matchesA">
-                                    <div class="match-row">
+                                    <div class="match-row" data-match="0">
                                         <label>Матч 1:</label>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="0" data-result="win" onclick="selectMatchResult('A',0,'win')">🏆 Победа</button>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="0" data-result="draw" onclick="selectMatchResult('A',0,'draw')">🤝 Ничья</button>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="0" data-result="loss" onclick="selectMatchResult('A',0,'loss')">❌ Поражение</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 0, 'win')">🏆 Победа</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 0, 'draw')">🤝 Ничья</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 0, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
                                         <input type="number" id="oppRankA0" min="1" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="match-row" data-match="1">
                                         <label>Матч 2:</label>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="1" data-result="win" onclick="selectMatchResult('A',1,'win')">🏆 Победа</button>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="1" data-result="draw" onclick="selectMatchResult('A',1,'draw')">🤝 Ничья</button>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="1" data-result="loss" onclick="selectMatchResult('A',1,'loss')">❌ Поражение</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 1, 'win')">🏆 Победа</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 1, 'draw')">🤝 Ничья</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 1, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
                                         <input type="number" id="oppRankA1" min="1" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="match-row" data-match="2">
                                         <label>Матч 3:</label>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="2" data-result="win" onclick="selectMatchResult('A',2,'win')">🏆 Победа</button>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="2" data-result="draw" onclick="selectMatchResult('A',2,'draw')">🤝 Ничья</button>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="2" data-result="loss" onclick="selectMatchResult('A',2,'loss')">❌ Поражение</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 2, 'win')">🏆 Победа</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 2, 'draw')">🤝 Ничья</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 2, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
                                         <input type="number" id="oppRankA2" min="1" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="match-row" data-match="3">
                                         <label>Матч 4:</label>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="3" data-result="win" onclick="selectMatchResult('A',3,'win')">🏆 Победа</button>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="3" data-result="draw" onclick="selectMatchResult('A',3,'draw')">🤝 Ничья</button>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="3" data-result="loss" onclick="selectMatchResult('A',3,'loss')">❌ Поражение</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 3, 'win')">🏆 Победа</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 3, 'draw')">🤝 Ничья</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 3, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
                                         <input type="number" id="oppRankA3" min="1" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="match-row" data-match="4">
                                         <label>Матч 5:</label>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="4" data-result="win" onclick="selectMatchResult('A',4,'win')">🏆 Победа</button>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="4" data-result="draw" onclick="selectMatchResult('A',4,'draw')">🤝 Ничья</button>
-                                        <button type="button" class="match-result-btn" data-team="A" data-index="4" data-result="loss" onclick="selectMatchResult('A',4,'loss')">❌ Поражение</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 4, 'win')">🏆 Победа</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 4, 'draw')">🤝 Ничья</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 4, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
                                         <input type="number" id="oppRankA4" min="1" max="200" value="50" style="width:60px;">
                                     </div>
@@ -690,43 +690,43 @@
                             <div class="form-group">
                                 <label>Последние 5 матчей (888 = нет данных)</label>
                                 <div id="matchesB">
-                                    <div class="match-row">
+                                    <div class="match-row" data-match="0">
                                         <label>Матч 1:</label>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="0" data-result="win" onclick="selectMatchResult('B',0,'win')">🏆 Победа</button>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="0" data-result="draw" onclick="selectMatchResult('B',0,'draw')">🤝 Ничья</button>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="0" data-result="loss" onclick="selectMatchResult('B',0,'loss')">❌ Поражение</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 0, 'win')">🏆 Победа</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 0, 'draw')">🤝 Ничья</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 0, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
                                         <input type="number" id="oppRankB0" min="1" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="match-row" data-match="1">
                                         <label>Матч 2:</label>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="1" data-result="win" onclick="selectMatchResult('B',1,'win')">🏆 Победа</button>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="1" data-result="draw" onclick="selectMatchResult('B',1,'draw')">🤝 Ничья</button>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="1" data-result="loss" onclick="selectMatchResult('B',1,'loss')">❌ Поражение</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 1, 'win')">🏆 Победа</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 1, 'draw')">🤝 Ничья</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 1, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
                                         <input type="number" id="oppRankB1" min="1" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="match-row" data-match="2">
                                         <label>Матч 3:</label>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="2" data-result="win" onclick="selectMatchResult('B',2,'win')">🏆 Победа</button>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="2" data-result="draw" onclick="selectMatchResult('B',2,'draw')">🤝 Ничья</button>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="2" data-result="loss" onclick="selectMatchResult('B',2,'loss')">❌ Поражение</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 2, 'win')">🏆 Победа</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 2, 'draw')">🤝 Ничья</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 2, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
                                         <input type="number" id="oppRankB2" min="1" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="match-row" data-match="3">
                                         <label>Матч 4:</label>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="3" data-result="win" onclick="selectMatchResult('B',3,'win')">🏆 Победа</button>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="3" data-result="draw" onclick="selectMatchResult('B',3,'draw')">🤝 Ничья</button>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="3" data-result="loss" onclick="selectMatchResult('B',3,'loss')">❌ Поражение</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 3, 'win')">🏆 Победа</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 3, 'draw')">🤝 Ничья</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 3, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
                                         <input type="number" id="oppRankB3" min="1" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="match-row" data-match="4">
                                         <label>Матч 5:</label>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="4" data-result="win" onclick="selectMatchResult('B',4,'win')">🏆 Победа</button>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="4" data-result="draw" onclick="selectMatchResult('B',4,'draw')">🤝 Ничья</button>
-                                        <button type="button" class="match-result-btn" data-team="B" data-index="4" data-result="loss" onclick="selectMatchResult('B',4,'loss')">❌ Поражение</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 4, 'win')">🏆 Победа</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 4, 'draw')">🤝 Ничья</button>
+                                        <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 4, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
                                         <input type="number" id="oppRankB4" min="1" max="200" value="50" style="width:60px;">
                                     </div>
@@ -903,26 +903,21 @@
             // Обновить данные
             selectedResults[team][index] = result;
             
-            // Обновить UI
-            const container = document.querySelector(`#matches${team} .match-row:${index + 1} .match-result-btn`)?.parentElement;
-            if (!container) {
-                // Если не нашли по индексу, перебираем все
-                const rows = document.querySelectorAll(`#matches${team} .match-row`);
-                if (rows[index]) {
-                    const btns = rows[index].querySelectorAll('.match-result-btn');
-                    btns.forEach(btn => {
-                        btn.classList.remove('selected-win', 'selected-draw', 'selected-loss');
-                        if (btn.dataset.result === result) {
-                            btn.classList.add(`selected-${result}`);
-                        }
-                    });
-                }
-            } else {
-                const btns = container.querySelectorAll('.match-result-btn');
+            // Найти все кнопки в этой строке
+            const container = document.querySelector(`#matches${team}`);
+            const rows = container.querySelectorAll('.match-row');
+            if (rows[index]) {
+                const btns = rows[index].querySelectorAll('.match-result-btn');
                 btns.forEach(btn => {
                     btn.classList.remove('selected-win', 'selected-draw', 'selected-loss');
-                    if (btn.dataset.result === result) {
-                        btn.classList.add(`selected-${result}`);
+                    // Определяем какой результат у кнопки по тексту
+                    const btnText = btn.textContent.trim();
+                    if (btnText.includes('Победа') && result === 'win') {
+                        btn.classList.add('selected-win');
+                    } else if (btnText.includes('Ничья') && result === 'draw') {
+                        btn.classList.add('selected-draw');
+                    } else if (btnText.includes('Поражение') && result === 'loss') {
+                        btn.classList.add('selected-loss');
                     }
                 });
             }
@@ -931,7 +926,8 @@
         function resetMatches(team) {
             for (let i = 0; i < 5; i++) {
                 selectedResults[team][i] = '';
-                const rows = document.querySelectorAll(`#matches${team} .match-row`);
+                const container = document.querySelector(`#matches${team}`);
+                const rows = container.querySelectorAll('.match-row');
                 if (rows[i]) {
                     rows[i].querySelectorAll('.match-result-btn').forEach(btn => {
                         btn.classList.remove('selected-win', 'selected-draw', 'selected-loss');
@@ -1062,7 +1058,6 @@
 
         function predictNextScorer(goals, teamName) {
             if (!goals || goals.length === 0) return null;
-            // Анализируем частоту голов по игрокам и свежесть голов
             const scorerStats = {};
             goals.forEach(g => {
                 if (!scorerStats[g.player]) {
@@ -1077,11 +1072,9 @@
             let bestScore = -1;
             for (let player in scorerStats) {
                 const stat = scorerStats[player];
-                // Чем больше голов и чем позже они были, тем выше шанс забить снова
                 let score = stat.count * 10;
                 if (stat.avgTime > 60) score += 15;
                 else if (stat.avgTime > 30) score += 5;
-                // Бонус за последний гол (самый свежий)
                 const lastGoal = goals.filter(g => g.player === player).sort((a,b) => b.time - a.time)[0];
                 if (lastGoal && lastGoal.time > 70) score += 10;
                 
@@ -1110,7 +1103,6 @@
         function calculateMatch(data) {
             const settings = getSettings();
             
-            // Сбор всех факторов с обработкой 888
             const factors = {
                 last_matches_a: calcLastMatches(data.last_matches_a),
                 last_matches_b: calcLastMatches(data.last_matches_b),
@@ -1124,7 +1116,6 @@
                 odds: calcOdds(data.odds_a, data.odds_b)
             };
             
-            // Получение весов
             const settingsObj = getSettings();
             const weights = {
                 last_matches: settingsObj.last_matches?.weight || 0.25,
@@ -1135,10 +1126,6 @@
                 odds: settingsObj.odds?.weight || 0.15
             };
             
-            // Подсчет активных факторов и перераспределение весов
-            let activeFactors = 0;
-            let weightSum = 0;
-            
             const factorMap = [
                 { key: 'last_matches', a: factors.last_matches_a, b: factors.last_matches_b, weight: weights.last_matches },
                 { key: 'head_to_head', a: factors.h2h, b: factors.h2h !== null ? 100 - factors.h2h : null, weight: weights.head_to_head },
@@ -1148,19 +1135,18 @@
                 { key: 'odds', a: factors.odds, b: factors.odds !== null ? 100 - factors.odds : null, weight: weights.odds }
             ];
             
-            // Проверяем, какие факторы активны
             const activeFactorsList = [];
+            let weightSum = 0;
+            
             for (let f of factorMap) {
                 const enabled = settingsObj[f.key]?.enabled !== false;
                 if (enabled && f.a !== null && f.b !== null) {
                     activeFactorsList.push(f);
-                    activeFactors++;
                     weightSum += f.weight;
                 }
             }
             
-            // Если нет активных факторов, возвращаем базовые значения
-            if (activeFactors === 0) {
+            if (activeFactorsList.length === 0 || weightSum === 0) {
                 return {
                     rating_a: 50,
                     rating_b: 50,
@@ -1170,30 +1156,23 @@
                     score_goals_a: 1,
                     score_goals_b: 1,
                     factors: factors,
-                    next_scorer: null
+                    next_scorer: null,
+                    goals_a: [],
+                    goals_b: []
                 };
             }
             
-            // Перераспределяем веса
             let ratingA = 0, ratingB = 0;
-            let usedWeightSum = 0;
             
             for (let f of activeFactorsList) {
                 const normWeight = f.weight / weightSum;
                 ratingA += f.a * normWeight;
                 ratingB += f.b * normWeight;
-                usedWeightSum += normWeight;
             }
             
-            if (usedWeightSum > 0) {
-                ratingA = Math.round(ratingA / usedWeightSum);
-                ratingB = Math.round(ratingB / usedWeightSum);
-            } else {
-                ratingA = 50;
-                ratingB = 50;
-            }
+            ratingA = Math.round(ratingA);
+            ratingB = Math.round(ratingB);
             
-            // Вероятности
             let total = ratingA + ratingB;
             let probA, probB, probDraw = 0;
             let drawCoeff = data.draw_coefficient || 0.25;
@@ -1216,14 +1195,12 @@
                 probDraw = 34;
             }
             
-            // Прогноз счета
             const attackA = !isNoData(data.attack_a) ? data.attack_a : 50;
             const attackB = !isNoData(data.attack_b) ? data.attack_b : 50;
             const defenseA = !isNoData(data.defense_a) ? data.defense_a : 50;
             const defenseB = !isNoData(data.defense_b) ? data.defense_b : 50;
             const score = predictScore(ratingA, ratingB, attackA, attackB, defenseA, defenseB);
             
-            // Прогноз следующего бомбардира
             const goalsA = getGoals('A');
             const goalsB = getGoals('B');
             const nextScorerA = predictNextScorer(goalsA, data.teamA);
@@ -1231,7 +1208,6 @@
             
             let nextScorer = null;
             if (nextScorerA && nextScorerB) {
-                // Сравниваем шансы
                 if (nextScorerA.score > nextScorerB.score) {
                     nextScorer = { ...nextScorerA, team: data.teamA };
                 } else {
@@ -1274,7 +1250,6 @@
                 </div>
             `;
 
-            // Прогноз следующего бомбардира
             if (result.next_scorer) {
                 html += `
                     <div class="next-scorer">
@@ -1285,7 +1260,6 @@
                 `;
             }
 
-            // Список голов
             if (result.goals_a.length > 0 || result.goals_b.length > 0) {
                 html += `<div style="margin:15px 0;"><h4>⚽ Последние голы</h4><div class="scorers-list">`;
                 if (result.goals_a.length > 0) {
