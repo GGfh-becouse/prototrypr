@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система прогнозирования спортивных матчей</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #1a237e;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            background: #e8eaf6;
+        }
+
+        .tab-btn.active {
+            background: #1a237e;
+            color: white;
+            border-color: #1a237e;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #1a237e;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e8eaf6;
+            padding-bottom: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .form-group input, 
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1a237e;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: monospace;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #1a237e;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0d1757;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 35, 126, 0.3);
+        }
+
+        .btn-success {
+            background: #2e7d32;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1b5e20;
+        }
+
+        .btn-danger {
+            background: #c62828;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b71c1c;
+        }
+
+        .btn-secondary {
+            background: #757575;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #616161;
+        }
+
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 12px;
+        }
+
+        .match-card {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .match-teams {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #1a237e;
+        }
+
+        .match-teams span {
+            color: #e65100;
+        }
+
+        .match-sport {
+            background: #e8eaf6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #1a237e;
+        }
+
+        .match-result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .result-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .result-item .label {
+            font-size: 12px;
+            color: #777;
+            text-transform: uppercase;
+        }
+
+        .result-item .value {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .result-item .value.high {
+            color: #2e7d32;
+        }
+        .result-item .value.medium {
+            color: #e65100;
+        }
+        .result-item .value.low {
+            color: #c62828;
+        }
+
+        .prob-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .prob-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+
+        .prob-fill.a {
+            background: linear-gradient(90deg, #1a237e, #3f51b5);
+        }
+        .prob-fill.b {
+            background: linear-gradient(90deg, #e65100, #ff5722);
+        }
+        .prob-fill.draw {
+            background: linear-gradient(90deg, #388e3c, #66bb6a);
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .settings-item label {
+            font-weight: 600;
+            min-width: 150px;
+        }
+
+        .settings-item input[type="range"] {
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .settings-item .weight-value {
+            font-weight: 700;
+            color: #1a237e;
+            min-width: 40px;
+        }
+
+        .settings-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .history-table th {
+            background: #1a237e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .history-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .history-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .history-table .actual-win {
+            color: #2e7d32;
+            font-weight: 700;
+        }
+        .history-table .actual-loss {
+            color: #c62828;
+            font-weight: 700;
+        }
+        .history-table .actual-draw {
+            color: #e65100;
+            font-weight: 700;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border: 1px solid #a5d6a7;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #90caf9;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .match-result-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .match-result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚽ Система прогнозирования спортивных матчей</h1>
+
+        <!-- Вкладки -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="create">➕ Создать матч</button>
+            <button class="tab-btn" data-tab="history">📊 История</button>
+            <button class="tab-btn" data-tab="settings">⚙️ Настройки</button>
+        </div>
+
+        <!-- Вкладка: Создать матч -->
+        <div id="tab-create" class="tab-content active">
+            <div id="createAlert"></div>
+            <div class="card">
+                <div class="card-title">Новый матч</div>
+                <form id="matchForm">
+                    <div class="form-grid">
+                        <!-- Левая колонка - Команда А -->
+                        <div>
+                            <h3 style="color:#1a237e; margin-bottom:15px;">Команда А</h3>
+                            <div class="form-group">
+                                <label>Название команды *</label>
+                                <input type="text" id="teamA" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Последние 5 матчей (JSON)</label>
+                                <textarea id="lastMatchesA" placeholder='[{"result":"win","opponent_rank":10},{"result":"loss","opponent_rank":5}]'></textarea>
+                                <small>Формат: [{"result":"win/loss/draw","opponent_rank":число}]</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Мировой рейтинг (место)</label>
+                                <input type="number" id="worldRankA" min="1" max="200">
+                            </div>
+                            <div class="form-group">
+                                <label>Сильные стороны (JSON)</label>
+                                <textarea id="strengthsA" placeholder='{"attack":85,"defense":70,"fitness":90,"teamwork":80,"psychology":75}'></textarea>
+                                <small>attack, defense, fitness, teamwork, psychology (0-100)</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Прошлые турниры (JSON)</label>
+                                <textarea id="tournamentsA" placeholder='[100,90,80,70,50]'></textarea>
+                                <small>100-победитель, 90-финал, 80-полуфинал, 70-четвертьфинал, 50-группа, 20-не участвовал</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Коэффициент букмекера</label>
+                                <input type="number" id="oddsA" step="0.01" min="1">
+                            </div>
+                        </div>
+
+                        <!-- Правая колонка - Команда Б -->
+                        <div>
+                            <h3 style="color:#e65100; margin-bottom:15px;">Команда Б</h3>
+                            <div class="form-group">
+                                <label>Название команды *</label>
+                                <input type="text" id="teamB" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Последние 5 матчей (JSON)</label>
+                                <textarea id="lastMatchesB" placeholder='[{"result":"win","opponent_rank":15}]'></textarea>
+                                <small>Формат: [{"result":"win/loss/draw","opponent_rank":число}]</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Мировой рейтинг (место)</label>
+                                <input type="number" id="worldRankB" min="1" max="200">
+                            </div>
+                            <div class="form-group">
+                                <label>Сильные стороны (JSON)</label>
+                                <textarea id="strengthsB" placeholder='{"attack":75,"defense":80,"fitness":85,"teamwork":70,"psychology":80}'></textarea>
+                                <small>attack, defense, fitness, teamwork, psychology (0-100)</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Прошлые турниры (JSON)</label>
+                                <textarea id="tournamentsB" placeholder='[80,70,50,20,20]'></textarea>
+                                <small>100-победитель, 90-финал, 80-полуфинал, 70-четвертьфинал, 50-группа, 20-не участвовал</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Коэффициент букмекера</label>
+                                <input type="number" id="oddsB" step="0.01" min="1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Общие поля -->
+                    <div class="form-group">
+                        <label>Вид спорта *</label>
+                        <select id="sport" required>
+                            <option value="Футбол">Футбол</option>
+                            <option value="Баскетбол">Баскетбол</option>
+                            <option value="Теннис">Теннис</option>
+                            <option value="Хоккей">Хоккей</option>
+                            <option value="Волейбол">Волейбол</option>
+                            <option value="Другое">Другое</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Личные встречи (JSON)</label>
+                        <textarea id="headToHead" placeholder='{"teamA_wins":3,"teamB_wins":2,"draws":1,"goals_diff":2}'></textarea>
+                        <small>{"teamA_wins":число, "teamB_wins":число, "draws":число, "goals_diff":разница_голов}</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Коэффициент ничейности (для спорта)</label>
+                        <input type="number" id="drawCoefficient" step="0.01" min="0" max="1" value="0.25">
+                        <small>0-1, для футбола ~0.25, для баскетбола ~0.05</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Рассчитать прогноз</button>
+                </form>
+            </div>
+
+            <!-- Результаты -->
+            <div id="resultsContainer" style="display:none;">
+                <div class="card" id="resultsCard">
+                    <div class="card-title">📈 Результаты прогноза</div>
+                    <div id="resultsContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вкладка: История -->
+        <div id="tab-history" class="tab-content">
+            <div class="card">
+                <div class="card-title">📋 История прогнозов</div>
+                <div id="historyContent"></div>
+            </div>
+        </div>
+
+        <!-- Вкладка: Настройки -->
+        <div id="tab-settings" class="tab-content">
+            <div class="card">
+                <div class="card-title">⚙️ Веса факторов</div>
+                <div id="settingsAlert"></div>
+                <div id="settingsList"></div>
+                <button class="btn btn-primary" onclick="saveSettings()">Сохранить настройки</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== ХРАНЕНИЕ ДАННЫХ ====================
+        function getMatches() {
+            return JSON.parse(localStorage.getItem('matches') || '[]');
+        }
+
+        function saveMatches(matches) {
+            localStorage.setItem('matches', JSON.stringify(matches));
+        }
+
+        function getSettings() {
+            return JSON.parse(localStorage.getItem('settings') || '{}');
+        }
+
+        function saveSettingsToStorage(settings) {
+            localStorage.setItem('settings', JSON.stringify(settings));
+        }
+
+        // Инициализация настроек по умолчанию
+        function initSettings() {
+            let settings = getSettings();
+            const defaultSettings = {
+                last_matches: { weight: 0.25, enabled: true },
+                head_to_head: { weight: 0.15, enabled: true },
+                world_rank: { weight: 0.15, enabled: true },
+                strengths: { weight: 0.20, enabled: true },
+                tournaments: { weight: 0.10, enabled: true },
+                odds: { weight: 0.15, enabled: true }
+            };
+            
+            let needSave = false;
+            for (let key in defaultSettings) {
+                if (!settings[key]) {
+                    settings[key] = defaultSettings[key];
+                    needSave = true;
+                }
+            }
+            if (needSave) {
+                saveSettingsToStorage(settings);
+            }
+            return settings;
+        }
+
+        // ==================== РАСЧЕТ ФАКТОРОВ ====================
+        function calcLastMatches(data) {
+            if (!data || data.length === 0) return 50;
+            let points = 0;
+            let count = 0;
+            for (let m of data) {
+                if (!m.result) continue;
+                let p = 0;
+                if (m.result === 'win') {
+                    p = 3;
+                    if (m.opponent_rank && m.opponent_rank < 50) p += 1;
+                } else if (m.result === 'draw') {
+                    p = 1;
+                }
+                points += p;
+                count++;
+            }
+            if (count === 0) return 50;
+            let avg = points / count;
+            // Нормализация от 0 до 100 (макс 15 очков за 5 матчей)
+            let normalized = Math.min(100, (avg / 15) * 100);
+            return Math.round(normalized);
+        }
+
+        function calcHeadToHead(data) {
+            if (!data || typeof data !== 'object') return null;
+            const { teamA_wins, teamB_wins, draws, goals_diff } = data;
+            if (teamA_wins === undefined && teamB_wins === undefined) return null;
+            let total = (teamA_wins || 0) + (teamB_wins || 0) + (draws || 0);
+            if (total === 0) return null;
+            // Преимущество в победах + разница голов
+            let winDiff = (teamA_wins || 0) - (teamB_wins || 0);
+            let score = 50 + (winDiff / Math.max(1, total)) * 30;
+            if (goals_diff !== undefined) {
+                score += Math.min(10, goals_diff / 5);
+            }
+            return Math.max(0, Math.min(100, Math.round(score)));
+        }
+
+        function calcWorldRank(rank) {
+            if (!rank || rank < 1) return 50;
+            // 1 место = 100, 10 место = 90, 25 = 75, 50 = 50, 100 = 20
+            let score;
+            if (rank <= 1) score = 100;
+            else if (rank <= 10) score = 100 - (rank - 1) * (10 / 9);
+            else if (rank <= 25) score = 90 - (rank - 10) * (15 / 15);
+            else if (rank <= 50) score = 75 - (rank - 25) * (25 / 25);
+            else if (rank <= 100) score = 50 - (rank - 50) * (30 / 50);
+            else score = 20 - Math.min(20, (rank - 100) * 0.2);
+            return Math.max(0, Math.min(100, Math.round(score)));
+        }
+
+        function calcStrengths(data) {
+            if (!data || typeof data !== 'object') return 50;
+            const keys = ['attack', 'defense', 'fitness', 'teamwork', 'psychology'];
+            let sum = 0, count = 0;
+            for (let key of keys) {
+                if (data[key] !== undefined) {
+                    sum += Math.min(100, Math.max(0, data[key]));
+                    count++;
+                }
+            }
+            if (count === 0) return 50;
+            return Math.round(sum / count);
+        }
+
+        function calcTournaments(data) {
+            if (!data || data.length === 0) return 50;
+            let sum = 0;
+            let count = 0;
+            for (let val of data) {
+                if (typeof val === 'number') {
+                    sum += Math.min(100, Math.max(20, val));
+                    count++;
+                }
+            }
+            if (count === 0) return 50;
+            return Math.round(sum / count);
+        }
+
+        function calcOdds(oddsA, oddsB) {
+            if (!oddsA || !oddsB || oddsA < 1 || oddsB < 1) return 50;
+            // Перевод коэффициентов в вероятность
+            let probA = 1 / oddsA;
+            let probB = 1 / oddsB;
+            let total = probA + probB;
+            if (total === 0) return 50;
+            let score = (probA / total) * 100;
+            return Math.round(Math.min(100, Math.max(0, score)));
+        }
+
+        // ==================== ОСНОВНОЙ РАСЧЕТ ====================
+        function calculateMatch(data) {
+            const settings = getSettings();
+            
+            // Расчет каждого фактора
+            let factors = {};
+            
+            // 1. Последние матчи
+            if (settings.last_matches && settings.last_matches.enabled !== false) {
+                factors.last_matches_a = calcLastMatches(data.last_matches_a);
+                factors.last_matches_b = calcLastMatches(data.last_matches_b);
+            } else {
+                factors.last_matches_a = 50;
+                factors.last_matches_b = 50;
+            }
+            
+            // 2. Личные встречи
+            if (settings.head_to_head && settings.head_to_head.enabled !== false) {
+                let h2h = data.head_to_head ? JSON.parse(data.head_to_head) : null;
+                let h2hScore = calcHeadToHead(h2h);
+                factors.head_to_head_a = h2hScore !== null ? h2hScore : null;
+                factors.head_to_head_b = h2hScore !== null ? 100 - h2hScore : null;
+            } else {
+                factors.head_to_head_a = null;
+                factors.head_to_head_b = null;
+            }
+            
+            // 3. Мировой рейтинг
+            if (settings.world_rank && settings.world_rank.enabled !== false) {
+                factors.world_rank_a = calcWorldRank(data.world_rank_a);
+                factors.world_rank_b = calcWorldRank(data.world_rank_b);
+            } else {
+                factors.world_rank_a = 50;
+                factors.world_rank_b = 50;
+            }
+            
+            // 4. Сильные стороны
+            if (settings.strengths && settings.strengths.enabled !== false) {
+                let strA = data.strengths_a ? JSON.parse(data.strengths_a) : null;
+                let strB = data.strengths_b ? JSON.parse(data.strengths_b) : null;
+                factors.strengths_a = calcStrengths(strA);
+                factors.strengths_b = calcStrengths(strB);
+            } else {
+                factors.strengths_a = 50;
+                factors.strengths_b = 50;
+            }
+            
+            // 5. Прошлые турниры
+            if (settings.tournaments && settings.tournaments.enabled !== false) {
+                let tourA = data.tournaments_a ? JSON.parse(data.tournaments_a) : [];
+                let tourB = data.tournaments_b ? JSON.parse(data.tournaments_b) : [];
+                factors.tournaments_a = calcTournaments(tourA);
+                factors.tournaments_b = calcTournaments(tourB);
+            } else {
+                factors.tournaments_a = 50;
+                factors.tournaments_b = 50;
+            }
+            
+            // 6. Коэффициенты букмекеров
+            if (settings.odds && settings.odds.enabled !== false) {
+                factors.odds_a = calcOdds(data.odds_a, data.odds_b);
+                factors.odds_b = 100 - calcOdds(data.odds_a, data.odds_b);
+            } else {
+                factors.odds_a = 50;
+                factors.odds_b = 50;
+            }
+            
+            // Получение весов
+            const w1 = settings.last_matches?.weight || 0.25;
+            const w2 = settings.head_to_head?.weight || 0.15;
+            const w3 = settings.world_rank?.weight || 0.15;
+            const w4 = settings.strengths?.weight || 0.20;
+            const w5 = settings.tournaments?.weight || 0.10;
+            const w6 = settings.odds?.weight || 0.15;
+            
+            // Нормализация весов
+            let totalWeight = w1 + w2 + w3 + w4 + w5 + w6;
+            if (totalWeight === 0) totalWeight = 1;
+            let normW1 = w1 / totalWeight;
+            let normW2 = w2 / totalWeight;
+            let normW3 = w3 / totalWeight;
+            let normW4 = w4 / totalWeight;
+            let normW5 = w5 / totalWeight;
+            let normW6 = w6 / totalWeight;
+            
+            // Расчет итогового рейтинга
+            let ratingA = 0, ratingB = 0;
+            let weightSum = 0;
+            
+            // Фактор 1
+            let fa = factors.last_matches_a, fb = factors.last_matches_b;
+            if (settings.last_matches?.enabled !== false) {
+                ratingA += fa * normW1;
+                ratingB += fb * normW1;
+                weightSum += normW1;
+            }
+            
+            // Фактор 2
+            if (settings.head_to_head?.enabled !== false && factors.head_to_head_a !== null) {
+                ratingA += factors.head_to_head_a * normW2;
+                ratingB += factors.head_to_head_b * normW2;
+                weightSum += normW2;
+            }
+            
+            // Фактор 3
+            if (settings.world_rank?.enabled !== false) {
+                ratingA += factors.world_rank_a * normW3;
+                ratingB += factors.world_rank_b * normW3;
+                weightSum += normW3;
+            }
+            
+            // Фактор 4
+            if (settings.strengths?.enabled !== false) {
+                ratingA += factors.strengths_a * normW4;
+                ratingB += factors.strengths_b * normW4;
+                weightSum += normW4;
+            }
+            
+            // Фактор 5
+            if (settings.tournaments?.enabled !== false) {
+                ratingA += factors.tournaments_a * normW5;
+                ratingB += factors.tournaments_b * normW5;
+                weightSum += normW5;
+            }
+            
+            // Фактор 6
+            if (settings.odds?.enabled !== false) {
+                ratingA += factors.odds_a * normW6;
+                ratingB += factors.odds_b * normW6;
+                weightSum += normW6;
+            }
+            
+            if (weightSum > 0) {
+                ratingA = ratingA / weightSum;
+                ratingB = ratingB / weightSum;
+            } else {
+                ratingA = 50;
+                ratingB = 50;
+            }
+            
+            ratingA = Math.round(ratingA);
+            ratingB = Math.round(ratingB);
+            
+            // Расчет вероятностей
+            let total = ratingA + ratingB;
+            let probA, probB, probDraw = 0;
+            let drawCoeff = parseFloat(data.draw_coefficient) || 0.25;
+            
+            if (total > 0) {
+                // Вероятность ничьей с учетом коэффициента
+                let drawWeight = drawCoeff * 0.3;
+                probDraw = Math.round(drawWeight * 100);
+                
+                let remaining = 100 - probDraw;
+                if (remaining > 0) {
+                    probA = Math.round((ratingA / total) * remaining);
+                    probB = Math.round((ratingB / total) * remaining);
+                } else {
+                    probA = 0;
+                    probB = 0;
+                }
+            } else {
+                probA = 33;
+                probB = 33;
+                probDraw = 34;
+            }
+            
+            // Корректировка чтобы сумма была 100
+            let sum = probA + probB + probDraw;
+            if (sum !== 100) {
+                let diff = 100 - sum;
+                probA += Math.round(diff / 2);
+                probB += diff - Math.round(diff / 2);
+                if (probA < 0) probA = 0;
+                if (probB < 0) probB = 0;
+                if (probDraw < 0) probDraw = 0;
+                sum = probA + probB + probDraw;
+                if (sum > 100) {
+                    if (probA > probB) probA -= (sum - 100);
+                    else probB -= (sum - 100);
+                }
+            }
+            
+            return {
+                rating_a: ratingA,
+                rating_b: ratingB,
+                prob_a: Math.max(0, Math.min(100, probA)),
+                prob_b: Math.max(0, Math.min(100, probB)),
+                prob_draw: Math.max(0, Math.min(100, probDraw)),
+                factors: factors,
+                weights: { w1: normW1, w2: normW2, w3: normW3, w4: normW4, w5: normW5, w6: normW6 }
+            };
+        }
+
+        // ==================== ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ ====================
+        function displayResults(data, result) {
+            const container = document.getElementById('resultsContainer');
+            const content = document.getElementById('resultsContent');
+            
+            container.style.display = 'block';
+            
+            let html = `
+                <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:20px; align-items:center; text-align:center;">
+                    <div>
+                        <div style="font-size:1.5em; font-weight:700; color:#1a237e;">${data.teamA}</div>
+                        <div style="font-size:3em; font-weight:700; color:#1a237e;">${result.rating_a}</div>
+                        <div>Рейтинг</div>
+                        <div style="margin-top:10px;">
+                            <div style="font-size:2em; font-weight:700; color:#1a237e;">${result.prob_a}%</div>
+                            <div>Вероятность победы</div>
+                        </div>
+                    </div>
+                    <div style="font-size:2em; font-weight:700; color:#e65100;">VS</div>
+                    <div>
+                        <div style="font-size:1.5em; font-weight:700; color:#e65100;">${data.teamB}</div>
+                        <div style="font-size:3em; font-weight:700; color:#e65100;">${result.rating_b}</div>
+                        <div>Рейтинг</div>
+                        <div style="margin-top:10px;">
+                            <div style="font-size:2em; font-weight:700; color:#e65100;">${result.prob_b}%</div>
+                            <div>Вероятность победы</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align:center; margin-top:15px; padding:10px; background:#f5f5f5; border-radius:8px;">
+                    <span style="font-weight:700;">Ничья: ${result.prob_draw}%</span>
+                    <span style="margin-left:20px; color:#777;">Коэффициент ничейности: ${data.draw_coefficient}</span>
+                </div>
+                <hr style="margin:20px 0;">
+                <div>
+                    <h4>Детализация факторов</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                        <div>
+                            <table style="width:100%; font-size:14px; border-collapse:collapse;">
+                                <tr style="background:#e8eaf6;"><th style="padding:5px;">Фактор</th><th style="padding:5px;">${data.teamA}</th></tr>
+                                <tr><td style="padding:5px; border-bottom:1px solid #ddd;">Последние матчи</td><td style="padding:5px; border-bottom:1px solid #ddd;">${result.factors.last_matches_a}</td></tr>
+                                <tr><td style="padding:5px; border-bottom:1px solid #ddd;">Личные встречи</td><td style="padding:5px; border-bottom:1px solid #ddd;">${result.factors.head_to_head_a !== null ? result.factors.head_to_head_a : 'Нет данных'}</td></tr>
+                                <tr><td style="padding:5px; border-bottom:1px solid #ddd;">Мировой рейтинг</td><td style="padding:5px; border-bottom:1px solid #ddd;">${result.factors.world_rank_a}</td></tr>
+                                <tr><td style="padding:5px; border-bottom:1px solid #ddd;">Сильные стороны</td><td style="padding:5px; border-bottom:1px solid #ddd;">${result.factors.strengths_a}</td></tr>
+                                <tr><td style="padding:5px; border-bottom:1px solid #ddd;">Прошлые турниры</td><td style="padding:5px; border-bottom:1px solid #ddd;">${result.factors.tournaments_a}</td></tr>
+                                <tr><td style="padding:5px;">Коэффициенты</td><td style="padding:5px;">${result.factors.odds_a}</td></tr>
+                            </table>
+                        </div>
+                        <div>
+                            <table style="width:100%; font-size:14px; border-collapse:collapse;">
+                                <tr style="background:#fff3e0;"><th style="padding:5px;">Фактор</th><th style="padding:5px;">${data.teamB}</th></tr>
+                                <tr><td style="padding:5px; border-bottom:1px solid #ddd;">Последние матчи</td><td style="padding:5px; border-bottom:1px solid #ddd;">${result.factors.last_matches_b}</td></tr>
+                                <tr><td style="padding:5px; border-bottom:1px solid #ddd;">Личные встречи</td><td style="padding:5px; border-bottom:1px solid #ddd;">${result.factors.head_to_head_b !== null ? result.factors.head_to_head_b : 'Нет данных'}</td></tr>
+                                <tr><td style="padding:5px; border-bottom:1px solid #ddd;">Мировой рейтинг</td><td style="padding:5px; border-bottom:1px solid #ddd;">${result.factors.world_rank_b}</td></tr>
+                                <tr><td style="padding:5px; border-bottom:1px solid #ddd;">Сильные стороны</td><td style="padding:5px; border-bottom:1px solid #ddd;">${result.factors.strengths_b}</td></tr>
+                                <tr><td style="padding:5px; border-bottom:1px solid #ddd;">Прошлые турниры</td><td style="padding:5px; border-bottom:1px solid #ddd;">${result.factors.tournaments_b}</td></tr>
+                                <tr><td style="padding:5px;">Коэффициенты</td><td style="padding:5px;">${result.factors.odds_b}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            content.innerHTML = html;
+            
+            // Прокрутка к результатам
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==================== ОБРАБОТКА ФОРМЫ ====================
+        document.getElementById('matchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            try {
+                // Сбор данных
+                const data = {
+                    sport: document.getElementById('sport').value,
+                    teamA: document.getElementById('teamA').value.trim(),
+                    teamB: document.getElementById('teamB').value.trim(),
+                    last_matches_a: JSON.parse(document.getElementById('lastMatchesA').value || '[]'),
+                    last_matches_b: JSON.parse(document.getElementById('lastMatchesB').value || '[]'),
+                    head_to_head: document.getElementById('headToHead').value || null,
+                    world_rank_a: parseInt(document.getElementById('worldRankA').value) || null,
+                    world_rank_b: parseInt(document.getElementById('worldRankB').value) || null,
+                    strengths_a: document.getElementById('strengthsA').value ? JSON.parse(document.getElementById('strengthsA').value) : null,
+                    strengths_b: document.getElementById('strengthsB').value ? JSON.parse(document.getElementById('strengthsB').value) : null,
+                    tournaments_a: document.getElementById('tournamentsA').value ? JSON.parse(document.getElementById('tournamentsA').value) : [],
+                    tournaments_b: document.getElementById('tournamentsB').value ? JSON.parse(document.getElementById('tournamentsB').value) : [],
+                    odds_a: parseFloat(document.getElementById('oddsA').value) || null,
+                    odds_b: parseFloat(document.getElementById('oddsB').value) || null,
+                    draw_coefficient: parseFloat(document.getElementById('drawCoefficient').value) || 0.25
+                };
+                
+                // Валидация
+                if (!data.teamA || !data.teamB) {
+                    showAlert('createAlert', 'Введите названия команд', 'error');
+                    return;
+                }
+                
+                // Расчет
+                const result = calculateMatch(data);
+                
+                // Сохранение в историю
+                const matches = getMatches();
+                const matchRecord = {
+                    id: Date.now(),
+                    date: new Date().toLocaleString(),
+                    sport: data.sport,
+                    teamA: data.teamA,
+                    teamB: data.teamB,
+                    data: data,
+                    result: result,
+                    actual_result: null
+                };
+                matches.unshift(matchRecord);
+                saveMatches(matches);
+                
+                // Отображение результатов
+                displayResults(data, result);
+                
+                showAlert('createAlert', 'Прогноз успешно рассчитан и сохранен!', 'success');
+                
+            } catch (error) {
+                showAlert('createAlert', 'Ошибка: ' + error.message, 'error');
+                console.error(error);
+            }
+        });
+
+        // ==================== ИСТОРИЯ ====================
+        function renderHistory() {
+            const container = document.getElementById('historyContent');
+            const matches = getMatches();
+            
+            if (matches.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <p>Нет сохраненных прогнозов</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div style="overflow-x:auto;">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Вид спорта</th>
+                                <th>Команда А</th>
+                                <th>Рейтинг</th>
+                                <th>Команда Б</th>
+                                <th>Рейтинг</th>
+                                <th>Прогноз</th>
+                                <th>Результат</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            for (let match of matches) {
+                const p = match.result;
+                let probText = `${p.prob_a}% / ${p.prob_b}% / ${p.prob_draw}%`;
+                let actualText = match.actual_result || 'Не указан';
+                let actualClass = '';
+                if (match.actual_result) {
+                    if (match.actual_result === 'Победа А') actualClass = 'actual-win';
+                    else if (match.actual_result === 'Победа Б') actualClass = 'actual-loss';
+                    else if (match.actual_result === 'Ничья') actualClass = 'actual-draw';
+                }
+                
+                html += `
+                    <tr>
+                        <td style="font-size:12px;">${match.date}</td>
+                        <td>${match.sport}</td>
+                        <td><strong>${match.teamA}</strong></td>
+                        <td>${p.rating_a}</td>
+                        <td><strong>${match.teamB}</strong></td>
+                        <td>${p.rating_b}</td>
+                        <td style="font-size:12px;">${probText}</td>
+                        <td class="${actualClass}">${actualText}</td>
+                        <td>
+                            <button class="btn btn-success btn-sm" onclick="setResult(${match.id}, 'winA')">А</button>
+                            <button class="btn btn-secondary btn-sm" onclick="setResult(${match.id}, 'draw')">=</button>
+                            <button class="btn btn-danger btn-sm" onclick="setResult(${match.id}, 'winB')">Б</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteMatch(${match.id})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function setResult(id, result) {
+            const matches = getMatches();
+            const match = matches.find(m => m.id === id);
+            if (!match) return;
+            
+            const map = {
+                'winA': 'Победа А',
+                'winB': 'Победа Б',
+                'draw': 'Ничья'
+            };
+            match.actual_result = map[result];
+            saveMatches(matches);
+            renderHistory();
+        }
+
+        function deleteMatch(id) {
+            if (!confirm('Удалить этот прогноз?')) return;
+            let matches = getMatches();
+            matches = matches.filter(m => m.id !== id);
+            saveMatches(matches);
+            renderHistory();
+        }
+
+        // ==================== НАСТРОЙКИ ====================
+        function renderSettings() {
+            const container = document.getElementById('settingsList');
+            const settings = getSettings();
+            
+            let html = '';
+            const names = {
+                last_matches: 'Последние 5 матчей',
+                head_to_head: 'Личные встречи',
+                world_rank: 'Мировой рейтинг',
+                strengths: 'Сильные стороны',
+                tournaments: 'Прошлые турниры',
+                odds: 'Коэффициенты букмекеров'
+            };
+            
+            for (let key in names) {
+                const s = settings[key] || { weight: 0.15, enabled: true };
+                html += `
+                    <div class="settings-item">
+                        <label>${names[key]}</label>
+                        <input type="range" min="0" max="1" step="0.01" 
+                               value="${s.weight}" 
+                               oninput="updateWeightDisplay('${key}', this.value)">
+                        <span class="weight-value" id="weight_${key}">${(s.weight * 100).toFixed(0)}%</span>
+                        <input type="checkbox" ${s.enabled !== false ? 'checked' : ''} 
+                               id="enabled_${key}">
+                        <label style="font-size:12px; min-width:auto;">Активен</label>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function updateWeightDisplay(key, value) {
+            document.getElementById(`weight_${key}`).textContent = (parseFloat(value) * 100).toFixed(0) + '%';
+        }
+
+        function saveSettings() {
+            const settings = getSettings();
+            const keys = ['last_matches', 'head_to_head', 'world_rank', 'strengths', 'tournaments', 'odds'];
+            
+            for (let key of keys) {
+                const weightInput = document.querySelector(`#settingsList input[type="range"][oninput*="${key}"]`);
+                const enabledInput = document.getElementById(`enabled_${key}`);
+                if (weightInput) {
+                    settings[key] = {
+                        weight: parseFloat(weightInput.value),
+                        enabled: enabledInput ? enabledInput.checked : true
+                    };
+                }
+            }
+            
+            saveSettingsToStorage(settings);
+            showAlert('settingsAlert', 'Настройки сохранены!', 'success');
+            renderSettings();
+        }
+
+        // ==================== ВКЛАДКИ ====================
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                
+                this.classList.add('active');
+                const tabId = this.dataset.tab;
+                document.getElementById(`tab-${tabId}`).classList.add('active');
+                
+                if (tabId === 'history') renderHistory();
+                if (tabId === 'settings') renderSettings();
+            });
+        });
+
+        // ==================== ВСПОМОГАТЕЛЬНЫЕ ====================
+        function showAlert(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            const color = type === 'success' ? '#4caf50' : (type === 'error' ? '#f44336' : '#2196f3');
+            container.innerHTML = `
+                <div class="alert alert-${type}" style="background:${color}22; border-color:${color}; color:${color};">
+                    ${message}
+                </div>
+            `;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+        initSettings();
+        renderHistory();
+
+        // Предзаполнение демо-данными
+        document.getElementById('lastMatchesA').value = '[{"result":"win","opponent_rank":10},{"result":"win","opponent_rank":25},{"result":"draw","opponent_rank":5},{"result":"loss","opponent_rank":3},{"result":"win","opponent_rank":15}]';
+        document.getElementById('lastMatchesB').value = '[{"result":"loss","opponent_rank":8},{"result":"win","opponent_rank":20},{"result":"draw","opponent_rank":12},{"result":"loss","opponent_rank":5},{"result":"win","opponent_rank":30}]';
+        document.getElementById('strengthsA').value = '{"attack":88,"defense":72,"fitness":91,"teamwork":78,"psychology":82}';
+        document.getElementById('strengthsB').value = '{"attack":75,"defense":85,"fitness":80,"teamwork":72,"psychology":70}';
+        document.getElementById('tournamentsA').value = '[100,90,80,70,50]';
+        document.getElementById('tournamentsB').value = '[80,70,50,20,20]';
+        document.getElementById('worldRankA').value = '12';
+        document.getElementById('worldRankB').value = '35';
+        document.getElementById('oddsA').value = '1.75';
+        document.getElementById('oddsB').value = '2.10';
+        document.getElementById('headToHead').value = '{"teamA_wins":4,"teamB_wins":2,"draws":1,"goals_diff":5}';
+        document.getElementById('drawCoefficient').value = '0.25';
+
+        console.log('✅ Система прогнозирования загружена!');
+    </script>
+</body>
+</html>
