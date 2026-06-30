@@ -24,10 +24,22 @@
             margin: 0 auto;
         }
 
-        h1 {
-            color: #1a237e;
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
             margin-bottom: 30px;
-            text-align: center;
+            flex-wrap: wrap;
+        }
+
+        .header img {
+            max-height: 80px;
+            width: auto;
+        }
+
+        .header h1 {
+            color: #1a237e;
             font-size: 2.5em;
         }
 
@@ -129,6 +141,27 @@
             display: inline-block;
         }
 
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+            padding: 5px;
+            background: #fafafa;
+            border-radius: 4px;
+        }
+
+        .form-row label {
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 60px;
+        }
+
+        .form-row input[type="number"] {
+            width: 60px;
+        }
+
         .btn {
             padding: 10px 24px;
             border: none;
@@ -182,6 +215,17 @@
             font-size: 12px;
         }
 
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #1a237e;
+            color: #1a237e;
+        }
+
+        .btn-outline:hover {
+            background: #1a237e;
+            color: white;
+        }
+
         .match-result-btn {
             display: inline-block;
             padding: 6px 14px;
@@ -216,13 +260,6 @@
             background: #c62828;
             color: white;
             border-color: #c62828;
-        }
-
-        .match-result-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
         }
 
         .result-item {
@@ -398,6 +435,25 @@
             color: #ffd54f;
         }
 
+        .penalty-prediction {
+            background: linear-gradient(135deg, #e65100, #bf360c);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .penalty-prediction .score {
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: 5px;
+        }
+
+        .penalty-prediction .score span {
+            color: #ffd54f;
+        }
+
         .scorers-list {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -433,42 +489,47 @@
             color: #1a237e;
         }
 
-        .match-row {
+        .rating-type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .rating-type-selector label {
             display: flex;
             align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
-            padding: 5px;
-            background: #fafafa;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
             border-radius: 4px;
+            background: #f5f5f5;
         }
 
-        .match-row label {
-            font-size: 12px;
-            font-weight: 600;
-            min-width: 60px;
-        }
-
-        .match-row input[type="number"] {
-            width: 60px;
-        }
-
-        .info-badge {
+        .rating-type-selector label.active {
             background: #e8eaf6;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            color: #1a237e;
+            border: 2px solid #1a237e;
+        }
+
+        .penalty-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .penalty-team {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .penalty-team h4 {
+            margin-bottom: 10px;
         }
 
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .match-result-grid {
-                grid-template-columns: 1fr 1fr;
             }
 
             .tabs {
@@ -483,18 +544,32 @@
             .scorers-list {
                 grid-template-columns: 1fr;
             }
-        }
 
-        @media (max-width: 480px) {
-            .match-result-grid {
+            .penalty-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header img {
+                max-height: 50px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⚽ Система прогнозирования спортивных матчей</h1>
+        <div class="header">
+            <img src="image.png" alt="Логотип" onerror="this.style.display='none'">
+            <h1>Система прогнозирования спортивных матчей</h1>
+        </div>
 
         <div class="tabs">
             <button class="tab-btn active" data-tab="create">➕ Создать матч</button>
@@ -519,7 +594,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Коэффициент ничейности (888 = нет данных)</label>
+                        <label>Коэффициент ничейности (0 = нет данных)</label>
                         <input type="number" id="drawCoefficient" step="0.01" min="0" max="1" value="0.25">
                         <small>0-1, для футбола ~0.25, для баскетбола ~0.05</small>
                     </div>
@@ -534,73 +609,90 @@
                             </div>
                             
                             <div class="form-group">
-                                <label>Последние 5 матчей (888 = нет данных)</label>
+                                <label>Последние 5 матчей (0 = нет данных)</label>
                                 <div id="matchesA">
-                                    <div class="match-row" data-match="0">
+                                    <div class="form-row" data-match="0">
                                         <label>Матч 1:</label>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 0, 'win')">🏆 Победа</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 0, 'draw')">🤝 Ничья</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 0, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
-                                        <input type="number" id="oppRankA0" min="1" max="200" value="50" style="width:60px;">
+                                        <input type="number" id="oppRankA0" min="0" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row" data-match="1">
+                                    <div class="form-row" data-match="1">
                                         <label>Матч 2:</label>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 1, 'win')">🏆 Победа</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 1, 'draw')">🤝 Ничья</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 1, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
-                                        <input type="number" id="oppRankA1" min="1" max="200" value="50" style="width:60px;">
+                                        <input type="number" id="oppRankA1" min="0" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row" data-match="2">
+                                    <div class="form-row" data-match="2">
                                         <label>Матч 3:</label>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 2, 'win')">🏆 Победа</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 2, 'draw')">🤝 Ничья</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 2, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
-                                        <input type="number" id="oppRankA2" min="1" max="200" value="50" style="width:60px;">
+                                        <input type="number" id="oppRankA2" min="0" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row" data-match="3">
+                                    <div class="form-row" data-match="3">
                                         <label>Матч 4:</label>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 3, 'win')">🏆 Победа</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 3, 'draw')">🤝 Ничья</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 3, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
-                                        <input type="number" id="oppRankA3" min="1" max="200" value="50" style="width:60px;">
+                                        <input type="number" id="oppRankA3" min="0" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row" data-match="4">
+                                    <div class="form-row" data-match="4">
                                         <label>Матч 5:</label>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 4, 'win')">🏆 Победа</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 4, 'draw')">🤝 Ничья</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('A', 4, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
-                                        <input type="number" id="oppRankA4" min="1" max="200" value="50" style="width:60px;">
+                                        <input type="number" id="oppRankA4" min="0" max="200" value="50" style="width:60px;">
                                     </div>
                                     <button type="button" class="btn btn-secondary btn-sm" onclick="resetMatches('A')">Сбросить</button>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label>Мировой рейтинг (888 = нет данных)</label>
-                                <input type="number" id="worldRankA" min="1" max="200" placeholder="1-200" value="888">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Сильные стороны (888 = нет данных)</label>
-                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
-                                    <div><label style="font-size:12px;">Атака</label><input type="number" id="attackA" min="0" max="100" value="888"></div>
-                                    <div><label style="font-size:12px;">Оборона</label><input type="number" id="defenseA" min="0" max="100" value="888"></div>
-                                    <div><label style="font-size:12px;">Форма</label><input type="number" id="fitnessA" min="0" max="100" value="888"></div>
-                                    <div><label style="font-size:12px;">Команда</label><input type="number" id="teamworkA" min="0" max="100" value="888"></div>
-                                    <div><label style="font-size:12px;">Психология</label><input type="number" id="psychologyA" min="0" max="100" value="888"></div>
+                                <label>Рейтинг (0 = нет данных)</label>
+                                <div class="rating-type-selector">
+                                    <label class="active" onclick="setRatingType('A', 'world')">
+                                        <input type="radio" name="ratingTypeA" value="world" checked> Мировой
+                                    </label>
+                                    <label onclick="setRatingType('A', 'league')">
+                                        <input type="radio" name="ratingTypeA" value="league"> Лига
+                                    </label>
+                                </div>
+                                <div id="worldRankGroupA">
+                                    <label style="font-size:12px;">Место в мировом рейтинге:</label>
+                                    <input type="number" id="worldRankA" min="0" max="200" value="12" style="width:80px;">
+                                </div>
+                                <div id="leagueRankGroupA" style="display:none;">
+                                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                        <div><label style="font-size:12px;">Место в лиге:</label><input type="number" id="leaguePosA" min="0" value="3" style="width:60px;"></div>
+                                        <div><label style="font-size:12px;">Всего команд:</label><input type="number" id="leagueTotalA" min="0" value="20" style="width:60px;"></div>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label>Прошлые турниры (888 = нет данных)</label>
+                                <label>Сильные стороны (0 = нет данных)</label>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+                                    <div><label style="font-size:12px;">Атака</label><input type="number" id="attackA" min="0" max="100" value="85"></div>
+                                    <div><label style="font-size:12px;">Оборона</label><input type="number" id="defenseA" min="0" max="100" value="70"></div>
+                                    <div><label style="font-size:12px;">Форма</label><input type="number" id="fitnessA" min="0" max="100" value="80"></div>
+                                    <div><label style="font-size:12px;">Команда</label><input type="number" id="teamworkA" min="0" max="100" value="75"></div>
+                                    <div><label style="font-size:12px;">Психология</label><input type="number" id="psychologyA" min="0" max="100" value="70"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Прошлые турниры (0 = нет данных)</label>
                                 <div style="display:flex; gap:5px; flex-wrap:wrap;">
                                     <select id="tournamentA1">
-                                        <option value="888">Нет данных</option>
+                                        <option value="0">Нет данных</option>
                                         <option value="100">Победитель</option>
                                         <option value="90">Финал</option>
                                         <option value="80">Полуфинал</option>
@@ -609,7 +701,7 @@
                                         <option value="20">Не участвовал</option>
                                     </select>
                                     <select id="tournamentA2">
-                                        <option value="888">Нет данных</option>
+                                        <option value="0">Нет данных</option>
                                         <option value="100">Победитель</option>
                                         <option value="90">Финал</option>
                                         <option value="80">Полуфинал</option>
@@ -618,7 +710,7 @@
                                         <option value="20">Не участвовал</option>
                                     </select>
                                     <select id="tournamentA3">
-                                        <option value="888">Нет данных</option>
+                                        <option value="0">Нет данных</option>
                                         <option value="100">Победитель</option>
                                         <option value="90">Финал</option>
                                         <option value="80">Полуфинал</option>
@@ -627,7 +719,7 @@
                                         <option value="20">Не участвовал</option>
                                     </select>
                                     <select id="tournamentA4">
-                                        <option value="888">Нет данных</option>
+                                        <option value="0">Нет данных</option>
                                         <option value="100">Победитель</option>
                                         <option value="90">Финал</option>
                                         <option value="80">Полуфинал</option>
@@ -636,7 +728,7 @@
                                         <option value="20">Не участвовал</option>
                                     </select>
                                     <select id="tournamentA5">
-                                        <option value="888">Нет данных</option>
+                                        <option value="0">Нет данных</option>
                                         <option value="100">Победитель</option>
                                         <option value="90">Финал</option>
                                         <option value="80">Полуфинал</option>
@@ -648,33 +740,42 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Коэффициент букмекера (888 = нет данных)</label>
-                                <input type="number" id="oddsA" step="0.01" min="1" placeholder="1.75" value="888">
+                                <label>Коэффициент букмекера (0 = нет данных)</label>
+                                <input type="number" id="oddsA" step="0.01" min="0" placeholder="1.75" value="1.75">
                             </div>
 
                             <div class="form-group">
                                 <label>Последние 5 голов (кто забил, минута)</label>
                                 <div id="goalsA">
-                                    <div class="match-row">
+                                    <div class="form-row">
                                         <input type="text" id="goalA0" placeholder="Игрок" style="width:120px;">
                                         <input type="number" id="goalTimeA0" placeholder="мин" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="form-row">
                                         <input type="text" id="goalA1" placeholder="Игрок" style="width:120px;">
                                         <input type="number" id="goalTimeA1" placeholder="мин" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="form-row">
                                         <input type="text" id="goalA2" placeholder="Игрок" style="width:120px;">
                                         <input type="number" id="goalTimeA2" placeholder="мин" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="form-row">
                                         <input type="text" id="goalA3" placeholder="Игрок" style="width:120px;">
                                         <input type="number" id="goalTimeA3" placeholder="мин" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="form-row">
                                         <input type="text" id="goalA4" placeholder="Игрок" style="width:120px;">
                                         <input type="number" id="goalTimeA4" placeholder="мин" style="width:60px;">
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Пенальти для команды А -->
+                            <div class="form-group">
+                                <label>Серия пенальти (0 = нет данных)</label>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+                                    <div><label style="font-size:12px;">Забито из 5:</label><input type="number" id="penaltyA" min="0" max="5" value="4" style="width:60px;"></div>
+                                    <div><label style="font-size:12px;">Реализация %:</label><input type="number" id="penaltyPercentA" min="0" max="100" value="80" style="width:60px;"></div>
                                 </div>
                             </div>
                         </div>
@@ -688,73 +789,90 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Последние 5 матчей (888 = нет данных)</label>
+                                <label>Последние 5 матчей (0 = нет данных)</label>
                                 <div id="matchesB">
-                                    <div class="match-row" data-match="0">
+                                    <div class="form-row" data-match="0">
                                         <label>Матч 1:</label>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 0, 'win')">🏆 Победа</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 0, 'draw')">🤝 Ничья</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 0, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
-                                        <input type="number" id="oppRankB0" min="1" max="200" value="50" style="width:60px;">
+                                        <input type="number" id="oppRankB0" min="0" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row" data-match="1">
+                                    <div class="form-row" data-match="1">
                                         <label>Матч 2:</label>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 1, 'win')">🏆 Победа</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 1, 'draw')">🤝 Ничья</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 1, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
-                                        <input type="number" id="oppRankB1" min="1" max="200" value="50" style="width:60px;">
+                                        <input type="number" id="oppRankB1" min="0" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row" data-match="2">
+                                    <div class="form-row" data-match="2">
                                         <label>Матч 3:</label>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 2, 'win')">🏆 Победа</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 2, 'draw')">🤝 Ничья</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 2, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
-                                        <input type="number" id="oppRankB2" min="1" max="200" value="50" style="width:60px;">
+                                        <input type="number" id="oppRankB2" min="0" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row" data-match="3">
+                                    <div class="form-row" data-match="3">
                                         <label>Матч 4:</label>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 3, 'win')">🏆 Победа</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 3, 'draw')">🤝 Ничья</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 3, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
-                                        <input type="number" id="oppRankB3" min="1" max="200" value="50" style="width:60px;">
+                                        <input type="number" id="oppRankB3" min="0" max="200" value="50" style="width:60px;">
                                     </div>
-                                    <div class="match-row" data-match="4">
+                                    <div class="form-row" data-match="4">
                                         <label>Матч 5:</label>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 4, 'win')">🏆 Победа</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 4, 'draw')">🤝 Ничья</button>
                                         <button type="button" class="match-result-btn" onclick="selectMatchResult('B', 4, 'loss')">❌ Поражение</button>
                                         <label style="margin-left:5px;">Рейтинг соперника:</label>
-                                        <input type="number" id="oppRankB4" min="1" max="200" value="50" style="width:60px;">
+                                        <input type="number" id="oppRankB4" min="0" max="200" value="50" style="width:60px;">
                                     </div>
                                     <button type="button" class="btn btn-secondary btn-sm" onclick="resetMatches('B')">Сбросить</button>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label>Мировой рейтинг (888 = нет данных)</label>
-                                <input type="number" id="worldRankB" min="1" max="200" placeholder="1-200" value="888">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Сильные стороны (888 = нет данных)</label>
-                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
-                                    <div><label style="font-size:12px;">Атака</label><input type="number" id="attackB" min="0" max="100" value="888"></div>
-                                    <div><label style="font-size:12px;">Оборона</label><input type="number" id="defenseB" min="0" max="100" value="888"></div>
-                                    <div><label style="font-size:12px;">Форма</label><input type="number" id="fitnessB" min="0" max="100" value="888"></div>
-                                    <div><label style="font-size:12px;">Команда</label><input type="number" id="teamworkB" min="0" max="100" value="888"></div>
-                                    <div><label style="font-size:12px;">Психология</label><input type="number" id="psychologyB" min="0" max="100" value="888"></div>
+                                <label>Рейтинг (0 = нет данных)</label>
+                                <div class="rating-type-selector">
+                                    <label class="active" onclick="setRatingType('B', 'world')">
+                                        <input type="radio" name="ratingTypeB" value="world" checked> Мировой
+                                    </label>
+                                    <label onclick="setRatingType('B', 'league')">
+                                        <input type="radio" name="ratingTypeB" value="league"> Лига
+                                    </label>
+                                </div>
+                                <div id="worldRankGroupB">
+                                    <label style="font-size:12px;">Место в мировом рейтинге:</label>
+                                    <input type="number" id="worldRankB" min="0" max="200" value="35" style="width:80px;">
+                                </div>
+                                <div id="leagueRankGroupB" style="display:none;">
+                                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                        <div><label style="font-size:12px;">Место в лиге:</label><input type="number" id="leaguePosB" min="0" value="8" style="width:60px;"></div>
+                                        <div><label style="font-size:12px;">Всего команд:</label><input type="number" id="leagueTotalB" min="0" value="20" style="width:60px;"></div>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label>Прошлые турниры (888 = нет данных)</label>
+                                <label>Сильные стороны (0 = нет данных)</label>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+                                    <div><label style="font-size:12px;">Атака</label><input type="number" id="attackB" min="0" max="100" value="70"></div>
+                                    <div><label style="font-size:12px;">Оборона</label><input type="number" id="defenseB" min="0" max="100" value="75"></div>
+                                    <div><label style="font-size:12px;">Форма</label><input type="number" id="fitnessB" min="0" max="100" value="75"></div>
+                                    <div><label style="font-size:12px;">Команда</label><input type="number" id="teamworkB" min="0" max="100" value="70"></div>
+                                    <div><label style="font-size:12px;">Психология</label><input type="number" id="psychologyB" min="0" max="100" value="75"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Прошлые турниры (0 = нет данных)</label>
                                 <div style="display:flex; gap:5px; flex-wrap:wrap;">
                                     <select id="tournamentB1">
-                                        <option value="888">Нет данных</option>
+                                        <option value="0">Нет данных</option>
                                         <option value="100">Победитель</option>
                                         <option value="90">Финал</option>
                                         <option value="80">Полуфинал</option>
@@ -763,7 +881,7 @@
                                         <option value="20">Не участвовал</option>
                                     </select>
                                     <select id="tournamentB2">
-                                        <option value="888">Нет данных</option>
+                                        <option value="0">Нет данных</option>
                                         <option value="100">Победитель</option>
                                         <option value="90">Финал</option>
                                         <option value="80">Полуфинал</option>
@@ -772,7 +890,7 @@
                                         <option value="20">Не участвовал</option>
                                     </select>
                                     <select id="tournamentB3">
-                                        <option value="888">Нет данных</option>
+                                        <option value="0">Нет данных</option>
                                         <option value="100">Победитель</option>
                                         <option value="90">Финал</option>
                                         <option value="80">Полуфинал</option>
@@ -781,7 +899,7 @@
                                         <option value="20">Не участвовал</option>
                                     </select>
                                     <select id="tournamentB4">
-                                        <option value="888">Нет данных</option>
+                                        <option value="0">Нет данных</option>
                                         <option value="100">Победитель</option>
                                         <option value="90">Финал</option>
                                         <option value="80">Полуфинал</option>
@@ -790,7 +908,7 @@
                                         <option value="20">Не участвовал</option>
                                     </select>
                                     <select id="tournamentB5">
-                                        <option value="888">Нет данных</option>
+                                        <option value="0">Нет данных</option>
                                         <option value="100">Победитель</option>
                                         <option value="90">Финал</option>
                                         <option value="80">Полуфинал</option>
@@ -802,45 +920,54 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Коэффициент букмекера (888 = нет данных)</label>
-                                <input type="number" id="oddsB" step="0.01" min="1" placeholder="2.15" value="888">
+                                <label>Коэффициент букмекера (0 = нет данных)</label>
+                                <input type="number" id="oddsB" step="0.01" min="0" placeholder="2.15" value="2.15">
                             </div>
 
                             <div class="form-group">
                                 <label>Последние 5 голов (кто забил, минута)</label>
                                 <div id="goalsB">
-                                    <div class="match-row">
+                                    <div class="form-row">
                                         <input type="text" id="goalB0" placeholder="Игрок" style="width:120px;">
                                         <input type="number" id="goalTimeB0" placeholder="мин" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="form-row">
                                         <input type="text" id="goalB1" placeholder="Игрок" style="width:120px;">
                                         <input type="number" id="goalTimeB1" placeholder="мин" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="form-row">
                                         <input type="text" id="goalB2" placeholder="Игрок" style="width:120px;">
                                         <input type="number" id="goalTimeB2" placeholder="мин" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="form-row">
                                         <input type="text" id="goalB3" placeholder="Игрок" style="width:120px;">
                                         <input type="number" id="goalTimeB3" placeholder="мин" style="width:60px;">
                                     </div>
-                                    <div class="match-row">
+                                    <div class="form-row">
                                         <input type="text" id="goalB4" placeholder="Игрок" style="width:120px;">
                                         <input type="number" id="goalTimeB4" placeholder="мин" style="width:60px;">
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Пенальти для команды Б -->
+                            <div class="form-group">
+                                <label>Серия пенальти (0 = нет данных)</label>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+                                    <div><label style="font-size:12px;">Забито из 5:</label><input type="number" id="penaltyB" min="0" max="5" value="3" style="width:60px;"></div>
+                                    <div><label style="font-size:12px;">Реализация %:</label><input type="number" id="penaltyPercentB" min="0" max="100" value="60" style="width:60px;"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Личные встречи (последние 5, 888 = нет данных)</label>
+                        <label>Личные встречи (последние 5, 0 = нет данных)</label>
                         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                            <div><label style="font-size:12px;">Побед А:</label><input type="number" id="h2hWinsA" min="0" max="5" value="888" style="width:60px;"></div>
-                            <div><label style="font-size:12px;">Побед Б:</label><input type="number" id="h2hWinsB" min="0" max="5" value="888" style="width:60px;"></div>
-                            <div><label style="font-size:12px;">Ничьих:</label><input type="number" id="h2hDraws" min="0" max="5" value="888" style="width:60px;"></div>
-                            <div><label style="font-size:12px;">Разница голов:</label><input type="number" id="h2hGoalsDiff" value="888" style="width:60px;"></div>
+                            <div><label style="font-size:12px;">Побед А:</label><input type="number" id="h2hWinsA" min="0" max="5" value="3" style="width:60px;"></div>
+                            <div><label style="font-size:12px;">Побед Б:</label><input type="number" id="h2hWinsB" min="0" max="5" value="1" style="width:60px;"></div>
+                            <div><label style="font-size:12px;">Ничьих:</label><input type="number" id="h2hDraws" min="0" max="5" value="1" style="width:60px;"></div>
+                            <div><label style="font-size:12px;">Разница голов:</label><input type="number" id="h2hGoalsDiff" value="3" style="width:60px;"></div>
                         </div>
                     </div>
 
@@ -900,17 +1027,14 @@
         };
 
         function selectMatchResult(team, index, result) {
-            // Обновить данные
             selectedResults[team][index] = result;
             
-            // Найти все кнопки в этой строке
             const container = document.querySelector(`#matches${team}`);
-            const rows = container.querySelectorAll('.match-row');
+            const rows = container.querySelectorAll('.form-row');
             if (rows[index]) {
                 const btns = rows[index].querySelectorAll('.match-result-btn');
                 btns.forEach(btn => {
                     btn.classList.remove('selected-win', 'selected-draw', 'selected-loss');
-                    // Определяем какой результат у кнопки по тексту
                     const btnText = btn.textContent.trim();
                     if (btnText.includes('Победа') && result === 'win') {
                         btn.classList.add('selected-win');
@@ -927,7 +1051,7 @@
             for (let i = 0; i < 5; i++) {
                 selectedResults[team][i] = '';
                 const container = document.querySelector(`#matches${team}`);
-                const rows = container.querySelectorAll('.match-row');
+                const rows = container.querySelectorAll('.form-row');
                 if (rows[i]) {
                     rows[i].querySelectorAll('.match-result-btn').forEach(btn => {
                         btn.classList.remove('selected-win', 'selected-draw', 'selected-loss');
@@ -942,7 +1066,7 @@
                 const result = selectedResults[team][i];
                 if (result) {
                     const rankInput = document.getElementById(`oppRank${team}${i}`);
-                    const rank = rankInput ? parseInt(rankInput.value) || 50 : 50;
+                    const rank = rankInput ? parseInt(rankInput.value) || 0 : 0;
                     matches.push({ result, opponent_rank: rank });
                 }
             }
@@ -954,7 +1078,7 @@
             for (let i = 0; i < 5; i++) {
                 const player = document.getElementById(`goal${team}${i}`)?.value?.trim();
                 const time = parseInt(document.getElementById(`goalTime${team}${i}`)?.value);
-                if (player && time && !isNaN(time)) {
+                if (player && time && !isNaN(time) && time > 0) {
                     goals.push({ player, time });
                 }
             }
@@ -962,12 +1086,46 @@
         }
 
         function isNoData(value) {
-            return value === 888 || value === '888' || value === null || value === undefined || value === '';
+            return value === 0 || value === '0' || value === null || value === undefined || value === '';
         }
 
-        function getValueOrNull(value) {
-            if (isNoData(value)) return null;
-            return parseFloat(value);
+        // ==================== ТИП РЕЙТИНГА ====================
+        function setRatingType(team, type) {
+            const worldGroup = document.getElementById(`worldRankGroup${team}`);
+            const leagueGroup = document.getElementById(`leagueRankGroup${team}`);
+            
+            if (type === 'world') {
+                worldGroup.style.display = 'block';
+                leagueGroup.style.display = 'none';
+            } else {
+                worldGroup.style.display = 'none';
+                leagueGroup.style.display = 'block';
+            }
+            
+            // Обновляем активный класс
+            const parent = worldGroup.closest('.form-group');
+            const labels = parent.querySelectorAll('.rating-type-selector label');
+            labels.forEach(label => {
+                label.classList.remove('active');
+                const radio = label.querySelector('input[type="radio"]');
+                if (radio && radio.value === type) {
+                    label.classList.add('active');
+                    radio.checked = true;
+                }
+            });
+        }
+
+        function getRankValue(team) {
+            const worldGroup = document.getElementById(`worldRankGroup${team}`);
+            if (worldGroup.style.display !== 'none') {
+                return parseInt(document.getElementById(`worldRank${team}`).value) || 0;
+            } else {
+                const pos = parseInt(document.getElementById(`leaguePos${team}`).value) || 0;
+                const total = parseInt(document.getElementById(`leagueTotal${team}`).value) || 0;
+                if (pos === 0 || total === 0) return 0;
+                // Преобразуем место в лиге в рейтинг 0-100
+                return Math.round((1 - (pos - 1) / total) * 100);
+            }
         }
 
         // ==================== РАСЧЕТ ФАКТОРОВ ====================
@@ -980,7 +1138,7 @@
                 let p = 0;
                 if (m.result === 'win') {
                     p = 3;
-                    if (m.opponent_rank && m.opponent_rank < 50) p += 1;
+                    if (m.opponent_rank && m.opponent_rank < 50 && m.opponent_rank > 0) p += 1;
                 } else if (m.result === 'draw') {
                     p = 1;
                 }
@@ -995,11 +1153,11 @@
 
         function calcHeadToHead(winsA, winsB, draws, goalsDiff) {
             if (isNoData(winsA) || isNoData(winsB) || isNoData(draws)) return null;
-            let total = (winsA || 0) + (winsB || 0) + (draws || 0);
-            if (total === 0) return null;
-            let winDiff = (winsA || 0) - (winsB || 0);
+            if (winsA === 0 && winsB === 0 && draws === 0) return null;
+            let total = winsA + winsB + draws;
+            let winDiff = winsA - winsB;
             let score = 50 + (winDiff / Math.max(1, total)) * 30;
-            if (!isNoData(goalsDiff)) {
+            if (!isNoData(goalsDiff) && goalsDiff !== 0) {
                 score += Math.min(10, goalsDiff / 5);
             }
             return Math.max(0, Math.min(100, Math.round(score)));
@@ -1021,7 +1179,7 @@
             let values = [attack, defense, fitness, teamwork, psychology];
             let sum = 0, count = 0;
             for (let v of values) {
-                if (!isNoData(v)) {
+                if (!isNoData(v) && v > 0) {
                     sum += Math.min(100, Math.max(0, v));
                     count++;
                 }
@@ -1036,7 +1194,7 @@
                 const el = document.getElementById(selector);
                 if (el) {
                     const val = parseInt(el.value);
-                    if (!isNoData(val)) {
+                    if (!isNoData(val) && val > 0) {
                         sum += val;
                         count++;
                     }
@@ -1054,6 +1212,23 @@
             if (total === 0) return null;
             let score = (probA / total) * 100;
             return Math.round(Math.min(100, Math.max(0, score)));
+        }
+
+        function calcPenalty(penaltyA, percentA, penaltyB, percentB) {
+            if (isNoData(penaltyA) || isNoData(penaltyB) || penaltyA === 0 || penaltyB === 0) return null;
+            if (isNoData(percentA) || isNoData(percentB)) {
+                // Если нет процентов, используем просто количество забитых
+                let total = penaltyA + penaltyB;
+                if (total === 0) return null;
+                let scoreA = (penaltyA / total) * 100;
+                return Math.round(scoreA);
+            }
+            // Учитываем и количество, и процент
+            let scoreA = (penaltyA / 5) * 50 + (percentA / 100) * 50;
+            let scoreB = (penaltyB / 5) * 50 + (percentB / 100) * 50;
+            let total = scoreA + scoreB;
+            if (total === 0) return null;
+            return Math.round((scoreA / total) * 100);
         }
 
         function predictNextScorer(goals, teamName) {
@@ -1107,13 +1282,14 @@
                 last_matches_a: calcLastMatches(data.last_matches_a),
                 last_matches_b: calcLastMatches(data.last_matches_b),
                 h2h: calcHeadToHead(data.h2h_wins_a, data.h2h_wins_b, data.h2h_draws, data.h2h_goals_diff),
-                world_rank_a: calcWorldRank(data.world_rank_a),
-                world_rank_b: calcWorldRank(data.world_rank_b),
+                world_rank_a: calcWorldRank(getRankValue('A')),
+                world_rank_b: calcWorldRank(getRankValue('B')),
                 strengths_a: calcStrengths(data.attack_a, data.defense_a, data.fitness_a, data.teamwork_a, data.psychology_a),
                 strengths_b: calcStrengths(data.attack_b, data.defense_b, data.fitness_b, data.teamwork_b, data.psychology_b),
                 tournaments_a: calcTournaments(['tournamentA1', 'tournamentA2', 'tournamentA3', 'tournamentA4', 'tournamentA5']),
                 tournaments_b: calcTournaments(['tournamentB1', 'tournamentB2', 'tournamentB3', 'tournamentB4', 'tournamentB5']),
-                odds: calcOdds(data.odds_a, data.odds_b)
+                odds: calcOdds(data.odds_a, data.odds_b),
+                penalty: calcPenalty(data.penalty_a, data.penalty_percent_a, data.penalty_b, data.penalty_percent_b)
             };
             
             const settingsObj = getSettings();
@@ -1158,7 +1334,10 @@
                     factors: factors,
                     next_scorer: null,
                     goals_a: [],
-                    goals_b: []
+                    goals_b: [],
+                    penalty_prob_a: 50,
+                    penalty_goals_a: 3,
+                    penalty_goals_b: 2
                 };
             }
             
@@ -1219,6 +1398,23 @@
                 nextScorer = { ...nextScorerB, team: data.teamB };
             }
             
+            // Прогноз пенальти
+            let penaltyProbA = factors.penalty !== null ? factors.penalty : 50;
+            let penaltyGoalsA = 3, penaltyGoalsB = 2;
+            if (factors.penalty !== null) {
+                // Генерируем счет пенальти на основе вероятности
+                const totalPenalty = 10;
+                penaltyGoalsA = Math.round((penaltyProbA / 100) * totalPenalty);
+                penaltyGoalsB = totalPenalty - penaltyGoalsA;
+                // Корректируем чтобы было реалистично
+                if (penaltyGoalsA < 2) penaltyGoalsA = 2;
+                if (penaltyGoalsB < 2) penaltyGoalsB = 2;
+                if (penaltyGoalsA + penaltyGoalsB > 10) {
+                    penaltyGoalsA = Math.round(penaltyGoalsA * 10 / (penaltyGoalsA + penaltyGoalsB));
+                    penaltyGoalsB = 10 - penaltyGoalsA;
+                }
+            }
+            
             return {
                 rating_a: ratingA,
                 rating_b: ratingB,
@@ -1230,7 +1426,10 @@
                 factors: factors,
                 next_scorer: nextScorer,
                 goals_a: goalsA,
-                goals_b: goalsB
+                goals_b: goalsB,
+                penalty_prob_a: penaltyProbA,
+                penalty_goals_a: penaltyGoalsA,
+                penalty_goals_b: penaltyGoalsB
             };
         }
 
@@ -1249,6 +1448,21 @@
                     </div>
                 </div>
             `;
+
+            // Прогноз пенальти
+            if (result.factors.penalty !== null) {
+                html += `
+                    <div class="penalty-prediction">
+                        <div style="font-size:1em; margin-bottom:10px;">⚽ Прогноз серии пенальти (при ничьей)</div>
+                        <div class="score">
+                            ${data.teamA} <span>${result.penalty_goals_a}</span> : <span>${result.penalty_goals_b}</span> ${data.teamB}
+                        </div>
+                        <div style="margin-top:10px; font-size:0.9em; opacity:0.8;">
+                            Шанс победы в пенальти: ${result.penalty_prob_a}% / ${100 - result.penalty_prob_a}%
+                        </div>
+                    </div>
+                `;
+            }
 
             if (result.next_scorer) {
                 html += `
@@ -1317,10 +1531,11 @@
                                 <tr style="background:#e8eaf6;"><th style="padding:8px;">Фактор</th><th style="padding:8px;">${data.teamA}</th></tr>
                                 <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Последние матчи</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.last_matches_a !== null ? result.factors.last_matches_a : 'Нет данных'}</td></tr>
                                 <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Личные встречи</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.h2h !== null ? result.factors.h2h : 'Нет данных'}</td></tr>
-                                <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Мировой рейтинг</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.world_rank_a !== null ? result.factors.world_rank_a : 'Нет данных'}</td></tr>
+                                <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Рейтинг</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.world_rank_a !== null ? result.factors.world_rank_a : 'Нет данных'}</td></tr>
                                 <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Сильные стороны</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.strengths_a !== null ? result.factors.strengths_a : 'Нет данных'}</td></tr>
                                 <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Прошлые турниры</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.tournaments_a !== null ? result.factors.tournaments_a : 'Нет данных'}</td></tr>
-                                <tr><td style="padding:8px;">Коэффициенты</td><td style="padding:8px;">${result.factors.odds !== null ? result.factors.odds : 'Нет данных'}</td></tr>
+                                <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Коэффициенты</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.odds !== null ? result.factors.odds : 'Нет данных'}</td></tr>
+                                <tr><td style="padding:8px;">Пенальти</td><td style="padding:8px;">${result.factors.penalty !== null ? result.factors.penalty + '%' : 'Нет данных'}</td></tr>
                             </table>
                         </div>
                         <div>
@@ -1328,10 +1543,11 @@
                                 <tr style="background:#fff3e0;"><th style="padding:8px;">Фактор</th><th style="padding:8px;">${data.teamB}</th></tr>
                                 <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Последние матчи</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.last_matches_b !== null ? result.factors.last_matches_b : 'Нет данных'}</td></tr>
                                 <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Личные встречи</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.h2h !== null ? 100 - result.factors.h2h : 'Нет данных'}</td></tr>
-                                <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Мировой рейтинг</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.world_rank_b !== null ? result.factors.world_rank_b : 'Нет данных'}</td></tr>
+                                <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Рейтинг</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.world_rank_b !== null ? result.factors.world_rank_b : 'Нет данных'}</td></tr>
                                 <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Сильные стороны</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.strengths_b !== null ? result.factors.strengths_b : 'Нет данных'}</td></tr>
                                 <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Прошлые турниры</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.tournaments_b !== null ? result.factors.tournaments_b : 'Нет данных'}</td></tr>
-                                <tr><td style="padding:8px;">Коэффициенты</td><td style="padding:8px;">${result.factors.odds !== null ? 100 - result.factors.odds : 'Нет данных'}</td></tr>
+                                <tr><td style="padding:8px; border-bottom:1px solid #ddd;">Коэффициенты</td><td style="padding:8px; border-bottom:1px solid #ddd;">${result.factors.odds !== null ? 100 - result.factors.odds : 'Нет данных'}</td></tr>
+                                <tr><td style="padding:8px;">Пенальти</td><td style="padding:8px;">${result.factors.penalty !== null ? (100 - result.factors.penalty) + '%' : 'Нет данных'}</td></tr>
                             </table>
                         </div>
                     </div>
@@ -1353,25 +1569,27 @@
                     teamB: document.getElementById('teamB').value.trim(),
                     last_matches_a: getMatchesData('A'),
                     last_matches_b: getMatchesData('B'),
-                    h2h_wins_a: parseInt(document.getElementById('h2hWinsA').value),
-                    h2h_wins_b: parseInt(document.getElementById('h2hWinsB').value),
-                    h2h_draws: parseInt(document.getElementById('h2hDraws').value),
-                    h2h_goals_diff: parseInt(document.getElementById('h2hGoalsDiff').value),
-                    world_rank_a: parseInt(document.getElementById('worldRankA').value),
-                    world_rank_b: parseInt(document.getElementById('worldRankB').value),
-                    attack_a: parseInt(document.getElementById('attackA').value),
-                    defense_a: parseInt(document.getElementById('defenseA').value),
-                    fitness_a: parseInt(document.getElementById('fitnessA').value),
-                    teamwork_a: parseInt(document.getElementById('teamworkA').value),
-                    psychology_a: parseInt(document.getElementById('psychologyA').value),
-                    attack_b: parseInt(document.getElementById('attackB').value),
-                    defense_b: parseInt(document.getElementById('defenseB').value),
-                    fitness_b: parseInt(document.getElementById('fitnessB').value),
-                    teamwork_b: parseInt(document.getElementById('teamworkB').value),
-                    psychology_b: parseInt(document.getElementById('psychologyB').value),
-                    odds_a: parseFloat(document.getElementById('oddsA').value),
-                    odds_b: parseFloat(document.getElementById('oddsB').value),
-                    draw_coefficient: parseFloat(document.getElementById('drawCoefficient').value) || 0.25
+                    h2h_wins_a: parseInt(document.getElementById('h2hWinsA').value) || 0,
+                    h2h_wins_b: parseInt(document.getElementById('h2hWinsB').value) || 0,
+                    h2h_draws: parseInt(document.getElementById('h2hDraws').value) || 0,
+                    h2h_goals_diff: parseInt(document.getElementById('h2hGoalsDiff').value) || 0,
+                    attack_a: parseInt(document.getElementById('attackA').value) || 0,
+                    defense_a: parseInt(document.getElementById('defenseA').value) || 0,
+                    fitness_a: parseInt(document.getElementById('fitnessA').value) || 0,
+                    teamwork_a: parseInt(document.getElementById('teamworkA').value) || 0,
+                    psychology_a: parseInt(document.getElementById('psychologyA').value) || 0,
+                    attack_b: parseInt(document.getElementById('attackB').value) || 0,
+                    defense_b: parseInt(document.getElementById('defenseB').value) || 0,
+                    fitness_b: parseInt(document.getElementById('fitnessB').value) || 0,
+                    teamwork_b: parseInt(document.getElementById('teamworkB').value) || 0,
+                    psychology_b: parseInt(document.getElementById('psychologyB').value) || 0,
+                    odds_a: parseFloat(document.getElementById('oddsA').value) || 0,
+                    odds_b: parseFloat(document.getElementById('oddsB').value) || 0,
+                    draw_coefficient: parseFloat(document.getElementById('drawCoefficient').value) || 0.25,
+                    penalty_a: parseInt(document.getElementById('penaltyA').value) || 0,
+                    penalty_b: parseInt(document.getElementById('penaltyB').value) || 0,
+                    penalty_percent_a: parseInt(document.getElementById('penaltyPercentA').value) || 0,
+                    penalty_percent_b: parseInt(document.getElementById('penaltyPercentB').value) || 0
                 };
                 
                 if (!data.teamA || !data.teamB) {
@@ -1432,6 +1650,7 @@
                                 <th>Команда Б</th>
                                 <th>Рейтинг</th>
                                 <th>Прогноз</th>
+                                <th>Пенальти</th>
                                 <th>Результат</th>
                                 <th>Действия</th>
                             </tr>
@@ -1443,6 +1662,7 @@
                 const p = match.result;
                 let probText = `${p.prob_a}% / ${p.prob_b}% / ${p.prob_draw}%`;
                 let scoreText = `${p.score_goals_a}:${p.score_goals_b}`;
+                let penaltyText = p.factors.penalty !== null ? `${p.penalty_goals_a}:${p.penalty_goals_b}` : 'Нет';
                 let actualText = match.actual_result || 'Не указан';
                 let actualClass = '';
                 if (match.actual_result) {
@@ -1461,6 +1681,7 @@
                         <td><strong>${match.teamB}</strong></td>
                         <td>${p.rating_b}</td>
                         <td style="font-size:12px;">${probText}</td>
+                        <td style="font-size:12px;">${penaltyText}</td>
                         <td class="${actualClass}">${actualText}</td>
                         <td>
                             <button class="btn btn-success btn-sm" onclick="setResult(${match.id}, 'winA')">А</button>
@@ -1513,7 +1734,7 @@
             const names = {
                 last_matches: 'Последние 5 матчей',
                 head_to_head: 'Личные встречи',
-                world_rank: 'Мировой рейтинг',
+                world_rank: 'Рейтинг',
                 strengths: 'Сильные стороны',
                 tournaments: 'Прошлые турниры',
                 odds: 'Коэффициенты букмекеров'
@@ -1631,7 +1852,6 @@
             document.getElementById('teamA').value = 'Реал Мадрид';
             document.getElementById('teamB').value = 'Барселона';
             
-            // Демо голов
             document.getElementById('goalA0').value = 'Винисиус Жуниор';
             document.getElementById('goalTimeA0').value = 45;
             document.getElementById('goalA1').value = 'Бензема';
